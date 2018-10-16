@@ -62,7 +62,7 @@ $qusetions['base'] = questionService::question('base');
              <div id="qusetionsHead"> 
                 <div id="toptitle">
                     <h1 class="htitle" id="htitle">
-                       甄别问卷</h1>
+                      istore</h1>
                 </div>   
     <?php 
         $content = '';
@@ -85,6 +85,9 @@ $qusetions['base'] = questionService::question('base');
                              $event = "onclick='goAnswer()'";
                         }else if($value['event']['jumpType']=='out'){
                              $event = "onclick='finish()'"; 
+                        }else if ($value['event']['jumpType'] == 'pass' && $value['event'][$keyA] != 'N') {
+                            $div = $value['event'][$keyA] + 1;//var_dump($div);exit; 
+                            $event = "onclick='jumpTo(\"" . $div . "\")'";
                         }
                     }
                     $content .= '
@@ -138,9 +141,6 @@ $qusetions['base'] = questionService::question('base');
                                     $event = "goAnswer()";
                                 } else if ($value['event']['jumpType'] == 'out') {
                                     $event = "finish()";
-                                } else if ($value['event']['jumpType'] == 'pass' && $value['event'][$keyA] != 'N') {
-                                    $div = $value['event'][$keyA] + 1;//var_dump($div);exit; 
-                                    $event = "onclick='jumpTo(\"" . $div . "\")'";
                                 }
                             }
                             $content .= '
@@ -185,10 +185,7 @@ $qusetions['base'] = questionService::question('base');
                         $content .= '
                                 <div class="ui-radio" '.$event.'>
                                     <span class="jqradiowrapper">
-                                        <input value="' . $keyA . '" id="' . $id . '" name="q' . $i .
-                            '" style="display:none;" type="radio">
-                                    <a class="jqradio" href="javascript:;"' . $event . '>
-                                    </a>
+                                        <input value="' . $keyA . '" id="' . $id . '" name="q' . $i .'" type="radio">
                                     </span>
                                     <div class="label" for="' . $id . '">' . $valueA . '</div>
                                 </div>';
@@ -331,7 +328,8 @@ $qusetions['base'] = questionService::question('base');
                         ' data-role="fieldcontain" type="4">
                         <div class="field-label">' . $value['question'] .
                         '<span class="req">*</span></div>
-                        <div class="ui-controlgroup"><textarea style="width: 100%;" rows="5" cols="20" name="q'.$i.'"></textarea></div>';
+                        <div class="ui-controlgroup"><textarea style="width: 100%;" rows="5" cols="20" name="q'.$i.'"></textarea></div>
+                        <div class="errorMessage"></div>';
                         $content .= '</div>';
                 }
                 
@@ -343,7 +341,8 @@ $qusetions['base'] = questionService::question('base');
     ?>
     </div>
         </fieldset>
-        <input type="button" value="下一题" class="button  blue" id="nextPro">
+        <a class="button blue" id="nextPro">下一题</a>
+        <a class="button blue" id="prePro">上一题</a>
         </div>
         <div class="footer">
             <div class="ValError" id="ValError">
@@ -351,13 +350,10 @@ $qusetions['base'] = questionService::question('base');
             
             
             <div id="goSubmit" style="padding: 0px 20px 10px;">
-                
-                
                 <div>
                 <a id="" href="javascript:;" class="button blue">
                     提交</a>
                 </div>
-                
             </div>
             
             
@@ -372,27 +368,30 @@ $qusetions['base'] = questionService::question('base');
     </div>
    
      
-    <div id="divPowerBy" style="margin: 0 auto;" class="logofooter"><div class="wjfooter"><span id="">LT&nbsp;提供技术支持</span></div></div>
+    <div id="divPowerBy" style="margin: 0 auto;" class="logofooter"><div class="wjfooter">LT&nbsp;提供技术支持</div></div>
     
     
-        <div id="divTimeUp" style="display: none;">
-            <div style="padding: 10px; overflow: auto; line-height: 20px; font-size: 16px; text-align: center;" id="divTimeUpTip"></div>
-        </div>
+        
     </form>
 
-    
    
     <script type="text/javascript">
         var totalPage=1;
         var langVer=0;
         var nowNum = 1;
         var nextNum = 1;
+        var numArr = {};
+        var parentDiv;
+        var pn = 0;
+        var text_v;
+        var oldPart;
+        var preNum;
         function SendForm(){
             /*var bottombox = document.getElementById("div1");
             bottombox.scrollIntoView(); */
-             var text_v = $('textarea').val();
-             var context = text_v.replace(/(^\s*)|(\s*$)/g, "");
-             if(context==''){
+             text_v = $('textarea').val();
+             text_v = text_v.replace(/(^\s*)|(\s*$)/g, "");
+             if(text_v==''){
                 $("div.errorMessage").eq(nowNum-1).html('请填写') 
              }else{
                 $.ajax({
@@ -415,6 +414,12 @@ $qusetions['base'] = questionService::question('base');
             /*var bottombox = document.getElementById(id);
             bottombox.scrollIntoView(); */
             nextNum = id;
+            for(var i=1;i<nextNum;i++){
+                var passNum = parseInt(nowNum)+i;
+                 $("#qn"+passNum).find('a.jqradio.jqchecked').each(function(){
+                    $(this).parents('.ui-radio').click();
+                 });
+            }
         }
         function finish(){
                 //alert("感谢您的参与，再会");
@@ -449,23 +454,53 @@ $qusetions['base'] = questionService::question('base');
                         nowNum = $(this).attr('aid');
                 });
             });
-            /*$('input.sortradio').each(function(){
-               $(this).bind('click',function(){
-                    if($(this).is(":checked")){
-                        $(this).css('background-color','#45AFE3');
-                   }else{
-                        $(this).css('background-color','#ffffff');
-                   } 
-               });
-               
-            });*/
-            $("textarea[name='q131']").blur(function(){
-                $('#goSubmit').show();
-                $('#nextPro').hide();
+
+            $("textarea").blur(function(){
+                text_v = $('textarea').val();
+                text_v = text_v.replace(/(^\s*)|(\s*$)/g, "");
+                if(text_v){
+                    $('#goSubmit').show();
+                    $('#nextPro').hide();
+                    $('#prePro').hide();
+                    $('#goSubmit').bind('click',function(){
+                        SendForm();
+                    });
+                }else{
+                    $('#goSubmit').hide();
+                    $('#nextPro').show();
+                    $('#prePro').show();
+                }
             });
             $('#qn1').show();
+            $('#prePro').bind("click",function(){
+                if(numArr[nowNum]){
+                    parentDiv = $("#qn"+nowNum).parent("div[name='questionsBase']");
+                    pn = parentDiv.index();//当前所属part
+                    if(numArr[nowNum]['part'] != pn){
+                        if(numArr[nowNum]['part'] == -1){
+                            $("div[name='questionsBase']").eq(pn).hide();
+                            $('#qusetionsHead').show(); 
+                        }else{
+                            $("div[name='questionsBase']").eq(pn).hide();
+                            $("div[name='questionsBase']").eq(numArr[nowNum]['part']).show();
+                        }
+                        
+                    }
+                    $("#qn"+nowNum).hide();
+                    $("#qn"+numArr[nowNum]['preNum']).show();
+                    nowNum = numArr[nowNum]['preNum'];
+                }
+            });
             $('#nextPro').bind("click",function(){
                 var isCheck = isFill = false;
+                if(nowNum == 63 && $("input[name='q63']:checked").length!=5){
+                    $("div.errorMessage").eq(nowNum-1).html('请选择五个选项');
+                    return; 
+                }
+                if(nowNum == 28 && $("#qn28").find('a.jqcheck.jqchecked').length>3){
+                    $("div.errorMessage").eq(nowNum-1).html('最多选择三个选项') ;
+                    return;
+                }
                 $("input[name='q"+nowNum+"']").each(function(){
                    if($(this).attr('type')=='radio'){
                         if($(this).is(":checked")){
@@ -510,17 +545,22 @@ $qusetions['base'] = questionService::question('base');
                         $('#qusetionsHead').hide(); 
                 }
               $("#qn"+nowNum).hide();
+              //上一题数据
+              oldPart = $("#qn"+nowNum).parent("div[name='questionsBase']").index();
+              preNum = nowNum;
               nowNum = parseInt(nowNum)+parseInt(nextNum);
+              numArr[nowNum] = {'part':oldPart,'preNum':preNum};
+              parentDiv = $("#qn"+nowNum).parent("div[name='questionsBase']");
+              pn = parentDiv.index();//当前所属part
               if(nowNum>8){
-                  var parentDiv = $("#qn"+nowNum).parent("div[name='questionsBase']");
-                  var pn = parentDiv.index();
                   if(pn>0){
-                    $("div[name='questionsBase']").eq(pn-1).hide();
+                    $("div[name='questionsBase']").eq(parseInt(pn)-1).hide();
                   }
                   parentDiv.show();
               }
               $("#qn"+nowNum).show();
               nextNum=1;
+              event.stopPropagation(); 
             });
         });  
         $("input.sortradio").each(function(){
@@ -544,6 +584,20 @@ $qusetions['base'] = questionService::question('base');
                $(this).addClass('rediochecked');
                $(this).attr('checked',true);
                event.stopPropagation(); 
+            });
+        });
+        $("input.normalradio").each(function(){
+            $(this).bind('click',function(){
+                $("input.normalradio").each(function(){
+                    if($(this).is(':checked')){
+                        if(!$(this).hasClass('rediochecked')){
+                            $(this).addClass('rediochecked');
+                        }
+                    }else{
+                        $(this).removeClass('rediochecked');
+                    }
+                });
+                event.stopPropagation();
             });
         });
     </script>
