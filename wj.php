@@ -1,18 +1,17 @@
 <?php
-require_once 'model/wjservice.php';
-require_once 'PHPExcel.php';
 set_time_limit(0);
+header("Content-type: text/html; charset=utf-8");
 header('Content-Type: application/vnd.ms-excel');
-header('Content-Disposition: attachment;filename="amazon_product_quantity.csv"');
+header('Content-Disposition: attachment;filename="Answer.csv"');
 header('Cache-Control: max-age=0');
 
 
 try{
-    $con = mysqli_connect('localhost','root','root');
+    $con = mysqli_connect('localhost','wenjuan','testpasswd');
 
     mysqli_select_db($con,'wenjuan');//选择数据库 
     $sql = "select context from wenjuan";
-    file_put_contents('4.txt',$sql);
+    //file_put_contents('4.txt',$sql);
     $result=mysqli_query($con,$sql);
     $j = 0;
         while($row = mysqli_fetch_array($result))
@@ -25,10 +24,14 @@ try{
                             if(is_array($dvalue['data'])){
                                 if(isset($dvalue['data'][$i])){
                                     //$items[$j][] = $i;
-                                    $items[$j][] = $dvalue['data'][$i];
+                                    if(is_numeric($dvalue['data'][$i])){
+                                        $items[$j][] = $dvalue['data'][$i];    
+                                    }else{
+                                        $items[$j][] = iconv("utf-8","gb2312//IGNORE",urldecode($dvalue['data'][$i])); 
+                                    }
                                 }else if($dvalue['num'] == 1){
                                     $ival = array_values($dvalue['data']);
-                                    $items[$j][] = $ival[0];
+                                    $items[$j][] = iconv("utf-8","gb2312//IGNORE",urldecode($ival[0]));
                                 }else{
                                     $items[$j][]  = '';
                                 }

@@ -1932,6 +1932,15 @@ input.sortAnswer {
     display: inline-block;
     position: relative;
 }
+.normalradio {
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    padding: 9px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+}
 .spanradio {
     padding-left: 30px;
 }
@@ -1980,6 +1989,45 @@ input.sortAnswer {
     display: inline-block;
     position: relative;
 }
+.normalradio {
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    border: 1px solid #cacece;
+    padding: 9px;
+    border-radius: 50px;
+    display: inline-block;
+    position: relative;
+}
+.normalcheckbox {
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    padding: 9px;
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+}
+.checkboxchecked {
+    background-color: #1ea0fa !important;
+    /*background: url("/images/wjxMobile/check44-pre@3x.png") no-repeat scroll center top transparent;*/
+    background-size: cover;
+    display: inline-block;
+    height: 21px;
+    vertical-align: middle;
+    width: 21px;
+    border: none;
+    position:relative;
+}
+.checkboxchecked:after {
+    content: '';
+    width: 14px;
+    height: 10px;
+    position: absolute;
+    top: 5px;
+    left: 3px;
+    background: #1ea0fa no-repeat;
+    background-size:cover;
+}
 .sortcheck{
     background-color: #1ea0fa;
     color: #99a1a7;
@@ -2014,3 +2062,16 @@ input.sortAnswer {
     min-width: -webkit-min-content;
 }
 }
+.ui-controlgroup .ui-radio .label, .ui-controlgroup .ui-checkbox .label{
+     padding: 14px 10px 10px 0;
+}   
+.normalradio {
+   
+    padding: 9px;
+}
+.normalcheckbox {
+   padding: 9px;
+}
+.jqradiowrapper, .jqcheckwrapper {
+        margin: 14px 4px 0 12px;
+    }

@@ -1,5 +1,4 @@
 <?php
-//var_dump($_POST);
 $qusetionArr = $_POST['anum'];
 foreach($qusetionArr as $k => $num){
 	$name = 'q'.($k+1);//echo $name;exit;
@@ -16,10 +15,10 @@ foreach($qusetionArr as $k => $num){
 	}else if(isset($_POST[$name]) && is_numeric($_POST[$name])){
 		$data[$k]['data'][$_POST[$name]] = $_POST[$name];
 	}else if($num == 1 && !is_numeric($_POST[$name])){
-		$data[$k]['data'][] = $_POST[$name];
+		$data[$k]['data'][] = urlencode($_POST[$name]);
 	}
 	if(isset($_POST[$name_text])){
-		$data[$k]['data'][$num] = $_POST[$name_text];
+		$data[$k]['data'][$num] = urlencode($_POST[$name_text]);
 		if($num>2 && !isset($data[$k]['data'][$num-1]) && !empty($_POST[$name_text])){
 			$data[$k]['data'][$num-1] = $num-1;
 		}
@@ -29,7 +28,7 @@ try{
 	$return = array('flag'=>0,'error'=>'');
 	if($data){
 		$data = json_encode($data);
-		$con = mysqli_connect('localhost','root','root');
+		$con = mysqli_connect('localhost','wenjuan','testpasswd');
 		mysqli_select_db($con,'wenjuan');//选择数据库 
 		$sql = "INSERT INTO wenjuan (context) 
 		VALUES ('".$data."')";
