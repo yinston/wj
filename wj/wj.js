@@ -71,9 +71,9 @@
         $(obj).attr('disabled',false);
     }
     function getFocus(obj){
-        var cname = '#a'+$(obj).attr('link');
-        if(!$(cname).hasClass('jqchecked')){
-            $(cname).addClass("jqchecked")
+        var cname = '#q'+$(obj).attr('link');
+        if(!$(cname).hasClass('checkboxchecked')){
+            $(cname).addClass("checkboxchecked")
         };
         event.stopPropagation();
     }
@@ -83,9 +83,9 @@
         $("div[name='qname']").each(function(){
             $(this).hide();
         });
-        $("div[name='qname']").each(function(){
+        $("div.ui-radio,input[type='radio'],div.ui-checkbox,input[type='checkbox']").each(function(){
             $(this).bind("click",function(){
-                nowNum = $(this).attr('aid');
+                nowNum = $(this).parents('div[name="qname"]').attr('aid');
             });
         });
 
@@ -125,8 +125,81 @@
                 nowNum = numArr[nowNum]['preNum'];
             }
         });
+        var radioC ;
+        var checkboxC ;
+        var isCheck = isFill = false;
+        var pnm;
+        var sonIndex;
+        var sonId;
         $('#nextPro').bind("click",function(e){
-            var isCheck = isFill = false;
+            //点击选项附值
+            radioC = $("input[name='q"+nowNum+"']:checked");
+            checkboxC = $("input[name='q"+nowNum+"[]']:checked");
+            if(radioC.length && parseInt(radioC.attr('passnum'))>0){
+                nextNum = radioC.attr('passnum');
+                jumpTo(nextNum);
+            }
+            if(checkboxC.length){
+              var arrs = [];
+              sonId =  '#qn'+(parseInt(nowNum)+1); 
+              var isSonCheck = $('#qn'+nowNum).attr('son');
+              $("input[name='q"+nowNum+"[]']").each(function(i,t){
+                  if($(this).attr('checked')){
+                      arrs.push(i);
+                  }
+              });
+              if(isSonCheck==1){
+                $(sonId).find('.ui-radio').each(function(){
+                  $(this).hide();
+                });
+              }
+              var isAllCheck = 0;
+              var isCustomCheck = 0;
+              var divid;
+              var sonText;
+              $("input[name='q"+nowNum+"[]']").each(function(k,v){
+               if($(this).attr('checked')!=undefined){
+                   pnm = $(this).attr('passnum')
+                   if(parseInt(pnm)>1){
+                       jumpTo(pnm);
+                   }
+                   if(isSonCheck==1){
+                       sonIndex = k;
+                       if(checkboxC.length!=$('input[name="anum[]"]').eq(nowNum-1).val()){
+                           divid = $(this).attr('id');
+                           if($('#'+divid+'_text').val()!=undefined && $('#'+divid+'_text').val()!=''){
+                               sonText = parseInt(nowNum)+1;
+                               if($('#q'+sonText+'_'+sonIndex+'_text').val()!=undefined){
+                                   $('input[name="q'+sonText+'_text"]').val($('#'+divid+'_text').val());
+                                   $('#q'+sonText+'_text').attr('type','label');
+                               }
+                               isCustomCheck = 1;
+                           }
+                       }else{
+                           isAllCheck = 1;
+                       }
+                   }
+               }
+              });
+              if(arrs.length==1){
+                  if(isCustomCheck){
+                      isAllCheck = 1;
+                  }else{
+                      $(arrs).each(function(i,item){
+                          $(sonId).find('.ui-radio').eq(item).show();
+                      });
+                  }
+              }else{
+                  $(arrs).each(function(i,item){
+                      $(sonId).find('.ui-radio').eq(item).show();
+                  });
+              }
+              if(isAllCheck){
+                $(sonId).find('.ui-radio').each(function(){
+                  $(this).show();
+                });
+              }
+            }
             if(nowNum==8 && $("input[name='q8']:checked").val() == 2){
               finish();
             }
@@ -134,20 +207,21 @@
                 $("div.errorMessage").eq(nowNum-1).html('请选择五个选项');
                 return;
             }
-            if(nowNum == 28 && $("#qn28").find('a.jqcheck.jqchecked').length>3){
+            if(nowNum == 28 && $("#qn28").find('input.normalcheckbox.checkboxchecked').length>3){
                 $("div.errorMessage").eq(nowNum-1).html('最多选择三个选项') ;
                 return;
             }
+            isFill = isCheck = false;
             $("input[name='q"+nowNum+"']").each(function(){
                 if($(this).attr('type')=='radio'){
-                    if($(this).attr("checked")){
+                    if($(this).attr("checked")!=undefined && $(this).attr("checked")){
                         isCheck = true;
                     }
                 }
             });
             $("input[name='q"+nowNum+"[]']").each(function(){
                 if($(this).attr('type')=='checkbox' ){
-                    if($(this).attr("checked")){
+                    if($(this).attr("checked")!=undefined && $(this).attr("checked")){
                         isCheck = true;
                     }
                 }
@@ -155,8 +229,8 @@
             if($("input[name='q"+nowNum+"_text']").length){
                 var qid = $("input[name='q"+nowNum+"_text']").attr('link');
                 var text_v = $("input[name='q"+nowNum+"_text']").val();
-                var context = text_v.replace(/(^\s*)|(\s*$)/g, "");
-                if($("#"+qid).attr("checked") && context == ''){
+                var context = text_v.replace(/(^\s*)|(\s*$)/g, "");        
+                if($("#"+qid).attr("checked")!=undefined && $("#"+qid).attr("checked") && context == ''){
                     isFill = true;
                 }
             }

@@ -81,6 +81,7 @@ $qusetions['base'] = questionService::question('base');
                     $t++;
                     $id='q'.$i.'_'.$t;
                     $event = '';
+                    $div = "";
                     if(isset($value['event'])){
                         if($value['event']['jumpType']=='out' && $value['event'][$keyA]=='N'){
                              $event = "onclick='goAnswer()'";
@@ -94,7 +95,7 @@ $qusetions['base'] = questionService::question('base');
                     $content .= '
                         <div class="ui-radio" '.$event.'>
                             <span class="jqradiowrapper">
-                                <input class="normalradio" value="'.$keyA.'" id="'.$id.'" name="q'.$i.
+                                <input class="normalradio" passnum="'.$div.'" value="'.$keyA.'" id="'.$id.'" name="q'.$i.
                                 '" type="radio">
                             </span>
                             <div class="label" for="'.$id.'">'.$valueA.'</div>
@@ -135,6 +136,7 @@ $qusetions['base'] = questionService::question('base');
                             $t++;
                             $id = 'q' . $i . '_' . $t;
                             $event = '';
+                            $div = "";
                             if (isset($value['event'])) {
                                 if ($value['event']['jumpType'] == 'out' && $value['event'][$keyA] == 'N') {
                                     $event = "goAnswer()";
@@ -142,10 +144,14 @@ $qusetions['base'] = questionService::question('base');
                                     $event = "finish()";
                                 }
                             }
+                            $son = "";
+                            if (isset($value['son'])) {
+                                $son =' son="1"';
+                            }
                             $content .= '
                                 <div class="ui-radio">
                                     <span class="jqradiowrapper">
-                                        <input class="normalradio" value="'.$keyA.'" id="'.$id.'" name="q'.$i.
+                                        <input class="normalradio" "'.$son.'" passnum="'.$div.'" value="'.$keyA.'" id="'.$id.'" name="q'.$i.
                                     '" type="radio">
                                     </span>
                                     <div class="label" for="' . $id . '">' . $valueA . '</div>
@@ -157,7 +163,11 @@ $qusetions['base'] = questionService::question('base');
                     }
                 } else if ($value['type'] == 1) {
                     $i = $i + 1;
-                    $content .='<div id="qn'.$i.'" name="qname" aid="'.$i.'">';
+                    $son = "";
+                    if (isset($value['son'])) {
+                        $son =' son="1"';
+                    }
+                    $content .='<div id="qn'.$i.'" name="qname" aid="'.$i.'" '.$son.'>';
                     $content .='<input type="hidden" name="anum[]" value="1">';
                     $content .= '<div class="field ui-field-contain" id=div' . $i . ' req=' . $i . ' topic=' . $i .
                         ' data-role="fieldcontain" type="3">
@@ -169,6 +179,7 @@ $qusetions['base'] = questionService::question('base');
                         $t++;
                         $id = 'q' . $i . '_' . $t;
                         $event = '';
+                        $div = "";
                         if (isset($value['event'])) {
                             if ($value['event']['jumpType'] == 'out' && $value['event'][$keyA] == 'N') {
                                 $event = "onclick='goAnswer()'";
@@ -182,7 +193,7 @@ $qusetions['base'] = questionService::question('base');
                         $content .= '
                                 <div class="ui-radio" '.$event.'>
                                     <span class="jqradiowrapper">
-                                        <input class="normalradio" value="' . $keyA . '" id="' . $id . '" name="q' . $i .'" type="radio">
+                                        <input class="normalradio" "'.$son.'" passnum="'.$div.'" value="' . $keyA . '" id="' . $id . '" name="q' . $i .'" type="radio">
                                     </span>
                                     <div class="label" for="' . $id . '">' . $valueA . '</div>
                                 </div>';
@@ -195,8 +206,8 @@ $qusetions['base'] = questionService::question('base');
                                     $content .= '
                                     <div class="ui-radio">
                                         <span class="jqradiowrapper">
-                                                <input class="normalradio" value="' . $keyA . '" id="' . $tid . '" name="q' . $i .
-                                '[]" type="radio">
+                                                <input class="normalradio" passnum="'.$div.'" value="' . $keyA . '" id="' . $tid . '" name="q' . $i .
+                                '" type="radio">
                                             </span>
                                         <div class="is_custom">'.$value['is_custom'].'<input id="' . $tid . '_text" name="q' . $i .
                             '_text" class="customAnswer" link="'.$tid.'" type="text" onclick="getFocus(this)"></div>
@@ -207,7 +218,11 @@ $qusetions['base'] = questionService::question('base');
                     $content .= '</div>';
                 } else if ($value['type'] == 3) {
                     $i = $i + 1;
-                    $content .='<div id="qn'.$i.'" name="qname" aid="'.$i.'">';
+                    $son = "";
+                    if (isset($value['son'])) {
+                        $son =' son="1"';
+                    }
+                    $content .='<div id="qn'.$i.'" name="qname" aid="'.$i.'" '.$son.'>';
                     $content .= '<div class="field ui-field-contain" id=div' . $i . ' req=' . $i . ' topic=' . $i .
                         ' data-role="fieldcontain" type="4">
                         <div class="field-label">' . $value['question'] .
@@ -218,6 +233,7 @@ $qusetions['base'] = questionService::question('base');
                         $t++;
                         $id = 'q' . $i . '_' . $t;
                         $event = '';
+                        $div = "";
                         if (isset($value['event'])) {
                             if ($value['event']['jumpType'] == 'out' && $value['event'][$keyA] == 'N') {
                                 $event = "onclick='goAnswer()'";
@@ -231,7 +247,7 @@ $qusetions['base'] = questionService::question('base');
                         $content .= '
                                     <div class="ui-checkbox" '.$event.'>
                                         <span class="jqcheckwrapper">
-                                            <input class="normalcheckbox" value="'.$keyA.'" id="'.$id.'" name="q'.$i.
+                                            <input class="normalcheckbox" passnum="'.$div.'" value="'.$keyA.'" id="'.$id.'" name="q'.$i.
                                     '[]" type="checkbox">
                                         </span>
                                         <div class="label" for="' . $id . '">' . $valueA . '</div>
@@ -246,7 +262,7 @@ $qusetions['base'] = questionService::question('base');
                         $content .= '
                                     <div class="ui-checkbox" '.$event.'>
                                         <span class="jqcheckwrapper">
-                                                <input class="normalcheckbox" value="' . $keyA . '" id="' . $tid . '" name="q' . $i .
+                                                <input class="normalcheckbox" passnum="'.$div.'" value="' . $keyA . '" id="' . $tid . '" name="q' . $i .
                                 '[]" type="checkbox">
                                             </span>
                                         <div class="is_custom">'.$value['is_custom'].'<input id="' . $tid . '_text" name="q' . $i .
@@ -265,7 +281,7 @@ $qusetions['base'] = questionService::question('base');
                     }
                     $content .='<div id="qn'.$i.'" name="qname" aid="'.$i.'">';
                     $content .='<input type="hidden" name="anum[]" value="5">';
-                   $content .= '<div class="field ui-field-contain" id=div' . $i . ' req=' . $i . ' topic=' . $i .
+                    $content .= '<div class="field ui-field-contain" id=div' . $i . ' req=' . $i . ' topic=' . $i .
                         ' data-role="fieldcontain" type="3">
                     <div class="field-label">' . $value['question'] .
                         '<span class="req">*</span></div>
@@ -286,7 +302,6 @@ $qusetions['base'] = questionService::question('base');
                         $t++;
                         $id = 'q' . $i . '_' . $t;
                         $event = '';
-                        $sortradio = '';
                         $content .= '
                                 <div name="customradio" class="ui-radio" '.$event.'>
                                     <span class="jqradiowrapper">
